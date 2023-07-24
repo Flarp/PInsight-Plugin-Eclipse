@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.linuxtools.tmf.ui.tracetypeui">
+   </extension>
+   <extension
+         point="org.eclipse.linuxtools.tmf.core.tracetype">
+      <type
+            category="org.eclipse.linuxtools.tmf.ctf.core.category.ctf"
+            event_type="org.pinsight.omp.core.trace.PInsightEvent"
+            id="org.pinsight"
+            isDirectory="false"
+            name="PInsight OMP Trace"
+            trace_type="org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace">
+      </type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.pinsight.ui.SourceLookup"
+            id="org.pinsight.ui"
+            name="SourceLookup"
+            restorable="true">
+      </view>
+   </extension>
+
+</plugin>
