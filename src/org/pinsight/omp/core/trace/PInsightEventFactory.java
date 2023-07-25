@@ -44,7 +44,7 @@ public class PInsightEventFactory extends CtfTmfEventFactory {
         return INSTANCE;
     }
 
-    //@Override
+    @Override
     public CtfTmfEvent createEvent(CtfTmfTrace trace, IEventDefinition eventDef, @Nullable String fileName) {
         /* Prepare what to pass to CtfTmfEvent's constructor */
         final IEventDeclaration eventDecl = eventDef.getDeclaration();

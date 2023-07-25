@@ -22,7 +22,7 @@ import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.BinaryCallsit
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.Messages;
 import org.eclipse.tracecompass.tmf.core.statesystem.TmfStateSystemAnalysisModule;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoAnalysisModule;
-import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoBinaryAspect;
+
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystem;
 import org.eclipse.tracecompass.statesystem.core.exceptions.StateSystemDisposedException;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
@@ -31,7 +31,9 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.event.aspect.ITmfEventAspect;
 import org.eclipse.tracecompass.tmf.core.event.lookup.TmfCallsite;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
+
 import org.pinsight.omp.core.trace.PInsightTrace;
+import org.pinsight.omp.core.aspect.PInsightBinaryAspect;
 
 
 /**
@@ -76,7 +78,7 @@ public class PInsightSourceAspect implements ITmfEventAspect<TmfCallsite> {
          * Resolve the binary callsite first, from there we can use the file's
          * debug information if it is present.
          */
-        BinaryCallsite bc = UstDebugInfoBinaryAspect.INSTANCE.resolve(event);
+        BinaryCallsite bc = PInsightBinaryAspect.INSTANCE.resolve(event);
         if (bc == null) {
             return null;
         }

@@ -27,7 +27,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pinsight.omp.core.Activator;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.Messages;
-import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoBinaryAspect;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.layout.ILttngUstEventLayout;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.event.aspect.ITmfEventAspect;
@@ -38,6 +37,11 @@ import org.eclipse.tracecompass.tmf.ctf.core.event.CtfTmfEventFactory;
 import org.eclipse.tracecompass.tmf.ctf.core.trace.CtfTmfTrace;
 import org.eclipse.tracecompass.tmf.ctf.core.trace.CtfTraceValidationStatus;
 import org.eclipse.tracecompass.internal.lttng2.common.core.trace.ILttngTrace;
+import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace;
+
+import org.pinsight.omp.core.aspect.PInsightBinaryAspect;
+import org.pinsight.omp.core.aspect.PInsightSourceAspect;
+import org.pinsight.omp.core.aspect.PInsightFunctionAspect;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -47,7 +51,7 @@ import com.google.common.collect.Multimap;
  *
  * @author Matthew Khouzam
  */
-public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
+public class PInsightTrace extends LttngUstTrace implements ILttngTrace {
 
     /**
      * Name of the tracer that generates this trace type, as found in the CTF
@@ -59,24 +63,21 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
 
     private static final int CONFIDENCE = 100;
 
-    private static final @NonNull Collection<ITmfEventAspect<?>> LTTNG_UST_ASPECTS;
+    private static final @NonNull Collection<ITmfEventAspect<?>> PINSIGHT_ASPECTS;
     
 
     static {
         ImmutableSet.Builder<ITmfEventAspect<?>> builder = ImmutableSet.builder();
         builder.addAll(CtfTmfTrace.CTF_ASPECTS);
-        /*
-        builder.add(UstDebugInfoBinaryAspect.INSTANCE);
-        builder.add(UstDebugInfoFunctionAspect.INSTANCE);
-        builder.add(UstDebugInfoSourceAspect.INSTANCE);
-        */
-        LTTNG_UST_ASPECTS = builder.build();
+        
+        builder.add(PInsightBinaryAspect.INSTANCE);
+        builder.add(PInsightSourceAspect.INSTANCE);
+        builder.add(PInsightFunctionAspect.INSTANCE);
+        PINSIGHT_ASPECTS = builder.build();
     }
 
     /** Default collections of aspects */
-    private @NonNull Collection<ITmfEventAspect<?>> fUstTraceAspects = ImmutableSet.copyOf(LTTNG_UST_ASPECTS);
-
-    private @Nullable ILttngUstEventLayout fLayout = null;
+    private @NonNull Collection<ITmfEventAspect<?>> fPinsightTraceAspects = ImmutableSet.copyOf(PINSIGHT_ASPECTS);
 
     /**
      * Default constructor
@@ -105,12 +106,9 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
      * @return The event layout
      * @since 2.0
      */
+    @Override
     public @NonNull ILttngUstEventLayout getEventLayout() {
-        ILttngUstEventLayout layout = fLayout;
-        if (layout == null) {
-            throw new IllegalStateException("Cannot get the layout of a non-initialized trace!"); //$NON-NLS-1$
-        }
-        return layout;
+    	return PInsightEventLayout.getInstance();
     }
 
     @Override
@@ -118,12 +116,8 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
             Class<? extends ITmfEvent> eventType) throws TmfTraceException {
         super.initTrace(resource, path, eventType);
 
-        /* Determine the event layout to use from the tracer's version */
-        ILttngUstEventLayout layout = getLayoutFromEnv();
-        fLayout = layout;
-
         ImmutableSet.Builder<ITmfEventAspect<?>> builder = ImmutableSet.builder();
-        builder.addAll(LTTNG_UST_ASPECTS);
+        builder.addAll(PINSIGHT_ASPECTS);
         /*
         if (checkFieldPresent(layout.contextVtid())) {
             builder.add(new ContextVtidAspect(layout));
@@ -136,7 +130,7 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
         }
         */
         builder.addAll(createCounterAspects(this));
-        fUstTraceAspects = builder.build();
+        fPinsightTraceAspects = builder.build();
     }
 
     private boolean checkFieldPresent(@NonNull String field) {
@@ -151,7 +145,7 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
 
     @Override
     public Iterable<ITmfEventAspect<?>> getEventAspects() {
-        return fUstTraceAspects;
+        return fPinsightTraceAspects;
     }
 
     /**
@@ -179,68 +173,6 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
     // Fields/methods bridging the Debug-info symbol provider
     // ------------------------------------------------------------------------
 
-    /*
-     * FIXME Once the symbol provider is split in core/ui components, the
-     * UstDebugInfoSymbolProvider should be moved to the core plugin, and this
-     * here can be removed.
-     */
-
-    /**
-     * Configuration of the symbol provider.
-     *
-     * @since 2.0
-     */
-    public static class SymbolProviderConfig {
-
-        private final boolean fUseCustomRootDir;
-        private final @NonNull String fCustomRootDirPath;
-
-        /**
-         * Constructor
-         *
-         * Note that a path can be specified even if 'useCustomRootDir' is
-         * false. This will keep the setting in the text field even when it is
-         * grayed out.
-         *
-         * @param useCustomRootDir
-         *            Should a custom directory be used
-         * @param rootDirPath
-         *            Custom directory path
-         */
-        public SymbolProviderConfig(boolean useCustomRootDir, @NonNull String rootDirPath) {
-            fUseCustomRootDir = useCustomRootDir;
-            fCustomRootDirPath = rootDirPath;
-        }
-
-        /**
-         * @return Should a custom directory be used
-         */
-        public boolean useCustomRootDir() {
-            return fUseCustomRootDir;
-        }
-
-        /**
-         * @return The configured root directory
-         */
-        public String getCustomRootDirPath() {
-            return fCustomRootDirPath;
-        }
-
-        /**
-         * Return the "real" path to use for symbol resolution. This is a
-         * convenience method that avoids having to check the state of
-         * {@link #useCustomRootDir()} separately.
-         *
-         * @return The actual root directory to use
-         */
-        public String getActualRootDirPath() {
-            if (fUseCustomRootDir) {
-                return fCustomRootDirPath;
-            }
-            return ""; //$NON-NLS-1$
-        }
-    }
-
     private @NonNull SymbolProviderConfig fCurrentProviderConfig =
             /* Default settings for new traces */
             new SymbolProviderConfig(false, ""); //$NON-NLS-1$
@@ -252,6 +184,7 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
      * @return The current symbol provider configuration
      * @since 2.0
      */
+    @Override
     public @NonNull SymbolProviderConfig getSymbolProviderConfig() {
         return fCurrentProviderConfig;
     }
@@ -263,9 +196,10 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
      *            The new symbol provider configuration to use
      * @since 2.0
      */
+    @Override
     public void setSymbolProviderConfig(@NonNull SymbolProviderConfig config) {
         fCurrentProviderConfig = config;
-        UstDebugInfoBinaryAspect.invalidateSymbolCache();
+        PInsightBinaryAspect.invalidateSymbolCache();
     }
     
 }

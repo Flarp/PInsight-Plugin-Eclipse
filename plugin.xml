@@ -2,9 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.linuxtools.tmf.ui.tracetypeui">
-   </extension>
-   <extension
          point="org.eclipse.linuxtools.tmf.core.tracetype">
       <type
             category="org.eclipse.linuxtools.tmf.ctf.core.category.ctf"
@@ -12,17 +9,27 @@
             id="org.pinsight"
             isDirectory="false"
             name="PInsight OMP Trace"
-            trace_type="org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace">
+            trace_type="org.pinsight.omp.core.trace.PInsightTrace">
       </type>
    </extension>
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            class="org.pinsight.ui.SourceLookup"
-            id="org.pinsight.ui"
-            name="SourceLookup"
-            restorable="true">
-      </view>
+         point="org.eclipse.tracecompass.tmf.core.symbolProvider">
+      <providerFactory
+            class="org.eclipse.tracecompass.internal.lttng2.ust.core.analysis.debuginfo.UstDebugInfoSymbolProviderFactory"
+            id="org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.providerFactory"
+            priority="50">
+      </providerFactory>
+      <providerFactory
+            class="org.eclipse.tracecompass.internal.lttng2.ust.ui.analysis.debuginfo.UstDebugInfoUiSymbolProviderFactory"
+            id="org.eclipse.tracecompass.lttng2.ust.ui.analysis.debuginfo.providerFactory"
+            priority="51">
+      </providerFactory>
+   </extension>
+   <extension
+         point="org.eclipse.linuxtools.tmf.ui.tracetypeui">
+      <type
+            tracetype="org.pinsight">
+      </type>
    </extension>
 
 </plugin>
