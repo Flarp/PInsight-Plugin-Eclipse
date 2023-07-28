@@ -1,9 +1,9 @@
 package org.pinsight.omp.core.trace;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.layout.LttngUst28EventLayout;
+import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.layout.LttngUst29EventLayout;
 
-public class PInsightEventLayout extends LttngUst28EventLayout {
+public class PInsightEventLayout extends LttngUst29EventLayout {
 	private static @Nullable PInsightEventLayout INSTANCE = null;
 
     /**
@@ -20,7 +20,7 @@ public class PInsightEventLayout extends LttngUst28EventLayout {
         return instance;
     }
     
-    
+
     @Override
     public String contextIp() {
     	return "parallel_codeptr";

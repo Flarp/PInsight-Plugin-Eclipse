@@ -21,13 +21,13 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.BinaryCallsite;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.Messages;
-import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoAnalysisModule;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoLoadedBinaryFile;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.layout.ILttngUstEventLayout;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
 import org.eclipse.tracecompass.tmf.core.event.aspect.ITmfEventAspect;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
+import org.pinsight.omp.core.analysis.PInsightAnalysisModule;
 import org.pinsight.omp.core.trace.PInsightTrace;
 
 import com.google.common.cache.CacheBuilder;
@@ -69,8 +69,8 @@ public class PInsightBinaryAspect implements ITmfEventAspect<BinaryCallsite> {
                          * First match the IP to the correct binary or library, by using the
                          * UstDebugInfoAnalysis.
                          */
-                        UstDebugInfoAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(symbolIp.fTrace,
-                                UstDebugInfoAnalysisModule.class, UstDebugInfoAnalysisModule.ID);
+                    	PInsightAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(symbolIp.fTrace,
+                    			PInsightAnalysisModule.class, PInsightAnalysisModule.ID);
                         if (module == null) {
                             /*
                              * The analysis is not available for this trace, we won't be able to

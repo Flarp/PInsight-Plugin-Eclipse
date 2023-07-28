@@ -38,10 +38,19 @@ import org.eclipse.tracecompass.tmf.ctf.core.trace.CtfTmfTrace;
 import org.eclipse.tracecompass.tmf.ctf.core.trace.CtfTraceValidationStatus;
 import org.eclipse.tracecompass.internal.lttng2.common.core.trace.ILttngTrace;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace;
+import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace.SymbolProviderConfig;
 
 import org.pinsight.omp.core.aspect.PInsightBinaryAspect;
 import org.pinsight.omp.core.aspect.PInsightSourceAspect;
 import org.pinsight.omp.core.aspect.PInsightFunctionAspect;
+
+import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoBinaryAspect;
+import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoSourceAspect;
+import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoFunctionAspect;
+
+import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.ContextVpidAspect;
+import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.ContextVtidAspect;
+import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.UstTracefAspect;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -51,7 +60,7 @@ import com.google.common.collect.Multimap;
  *
  * @author Matthew Khouzam
  */
-public class PInsightTrace extends LttngUstTrace implements ILttngTrace {
+public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
 
     /**
      * Name of the tracer that generates this trace type, as found in the CTF
@@ -106,7 +115,7 @@ public class PInsightTrace extends LttngUstTrace implements ILttngTrace {
      * @return The event layout
      * @since 2.0
      */
-    @Override
+    //@Override
     public @NonNull ILttngUstEventLayout getEventLayout() {
     	return PInsightEventLayout.getInstance();
     }
@@ -118,7 +127,9 @@ public class PInsightTrace extends LttngUstTrace implements ILttngTrace {
 
         ImmutableSet.Builder<ITmfEventAspect<?>> builder = ImmutableSet.builder();
         builder.addAll(PINSIGHT_ASPECTS);
-        /*
+        
+        ILttngUstEventLayout layout = getLayoutFromEnv();
+        
         if (checkFieldPresent(layout.contextVtid())) {
             builder.add(new ContextVtidAspect(layout));
         }
@@ -128,7 +139,7 @@ public class PInsightTrace extends LttngUstTrace implements ILttngTrace {
         if (getContainedEventTypes().stream().anyMatch(potentialEvent -> potentialEvent.getName().startsWith(layout.eventTracefPrefix()))) {
             builder.add(UstTracefAspect.getInstance());
         }
-        */
+        
         builder.addAll(createCounterAspects(this));
         fPinsightTraceAspects = builder.build();
     }
@@ -184,7 +195,7 @@ public class PInsightTrace extends LttngUstTrace implements ILttngTrace {
      * @return The current symbol provider configuration
      * @since 2.0
      */
-    @Override
+    //@Override
     public @NonNull SymbolProviderConfig getSymbolProviderConfig() {
         return fCurrentProviderConfig;
     }
@@ -196,7 +207,7 @@ public class PInsightTrace extends LttngUstTrace implements ILttngTrace {
      *            The new symbol provider configuration to use
      * @since 2.0
      */
-    @Override
+    //@Override
     public void setSymbolProviderConfig(@NonNull SymbolProviderConfig config) {
         fCurrentProviderConfig = config;
         PInsightBinaryAspect.invalidateSymbolCache();

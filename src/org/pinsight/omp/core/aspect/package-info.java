@@ -1,0 +1,1 @@
+package org.pinsight.omp.core.aspect;
