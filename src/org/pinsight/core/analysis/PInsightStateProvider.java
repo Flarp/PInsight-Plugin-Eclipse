@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-package org.pinsight.omp.core.analysis;
+package org.pinsight.core.analysis;
 
 import static org.eclipse.tracecompass.common.core.NonNullUtils.checkNotNull;
 
@@ -31,6 +31,7 @@ import org.eclipse.tracecompass.analysis.os.linux.core.event.aspect.LinuxPidAspe
 import org.eclipse.tracecompass.common.core.log.TraceCompassLog;
 import org.eclipse.tracecompass.common.core.log.TraceCompassLogUtils;
 import org.eclipse.tracecompass.common.core.process.ProcessUtils;
+import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.layout.LttngUst29EventLayout;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.layout.ILttngUstEventLayout;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.StateSystemUtils;
@@ -44,8 +45,7 @@ import org.eclipse.tracecompass.tmf.core.statesystem.ITmfStateProvider;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
 import org.eclipse.tracecompass.tmf.core.util.Pair;
 
-import org.pinsight.omp.core.trace.PInsightEventLayout;
-import org.pinsight.omp.core.trace.PInsightTrace;
+import org.pinsight.core.trace.PInsightTrace;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -135,7 +135,7 @@ public class PInsightStateProvider extends AbstractTmfStateProvider {
      */
     private static final Pattern fNmPattern = Pattern.compile("^\\s*(\\S++)\\s++(\\w)\\s++(\\S++)\\s++([^\\:\\s]*):(.*)$"); //$NON-NLS-1$
 
-    private final PInsightEventLayout fLayout;
+    private final LttngUst29EventLayout fLayout;
     private final Map<String, Integer> fEventNames;
 
     /**
@@ -212,16 +212,13 @@ public class PInsightStateProvider extends AbstractTmfStateProvider {
      */
     public PInsightStateProvider(PInsightTrace trace) {
         super(trace, "Ust:DebugInfo"); //$NON-NLS-1$
-        ILttngUstEventLayout layout = trace.getEventLayout();
-        if (!(layout instanceof PInsightEventLayout)) {
-            /* This analysis only support UST 2.8+ traces */
-            throw new IllegalStateException("Debug info analysis was started with an incompatible trace."); //$NON-NLS-1$
-        }
-        fLayout = (PInsightEventLayout) layout;
+        ILttngUstEventLayout layout = LttngUst29EventLayout.getInstance();
+
+        fLayout = (LttngUst29EventLayout) layout;
         fEventNames = buildEventNames(fLayout);
     }
 
-    private static Map<String, Integer> buildEventNames(PInsightEventLayout layout) {
+    private static Map<String, Integer> buildEventNames(LttngUst29EventLayout layout) {
         ImmutableMap.Builder<String, Integer> builder = ImmutableMap.builder();
         builder.put(layout.eventDlOpen(), DL_DLOPEN_INDEX);
         builder.put(layout.eventDlBuildId(), DL_BUILD_ID_INDEX);

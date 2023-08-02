@@ -9,18 +9,21 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-package org.pinsight.omp.core.trace;
+package org.pinsight.core.trace;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.tracecompass.ctf.core.CTFStrings;
 import org.eclipse.tracecompass.ctf.core.event.IEventDeclaration;
 import org.eclipse.tracecompass.ctf.core.event.IEventDefinition;
+import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.layout.LttngUst29EventLayout;
 import org.eclipse.tracecompass.tmf.core.timestamp.ITmfTimestamp;
 import org.eclipse.tracecompass.tmf.core.trace.ITmfContext;
 import org.eclipse.tracecompass.tmf.ctf.core.event.CtfTmfEvent;
 import org.eclipse.tracecompass.tmf.ctf.core.event.CtfTmfEventFactory;
 import org.eclipse.tracecompass.tmf.ctf.core.trace.CtfTmfTrace;
+import org.pinsight.omp.trace.PInsightOmpEventLayout;
+import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstEvent;
 
 /**
  * Factory for {@link LttngUstEvent}.
@@ -59,14 +62,24 @@ public class PInsightEventFactory extends CtfTmfEventFactory {
         if (eventDecl.getName().equals(CTFStrings.LOST_EVENT_NAME)) {
             return createLostEvent(trace, eventDef, eventDecl, ts, timestamp, sourceCPU, reference);
         }
-
-        /* Handle standard event types */
-        return new PInsightEvent(trace,
-                ITmfContext.UNKNOWN_RANK,
-                timestamp,
-                reference, // filename
-                sourceCPU,
-                eventDecl,
-                eventDef);
+        
+        
+        if (eventDecl.getName().startsWith("ompt")) {
+        	return new PInsightEvent(trace,
+	                ITmfContext.UNKNOWN_RANK,
+	                timestamp,
+	                reference, // filename
+	                sourceCPU,
+	                eventDecl,
+	                eventDef);
+        } else {
+        	return new PInsightEvent(trace,
+	                ITmfContext.UNKNOWN_RANK,
+	                timestamp,
+	                reference, // filename
+	                sourceCPU,
+	                eventDecl,
+	                eventDef);
+        }
     }
 }

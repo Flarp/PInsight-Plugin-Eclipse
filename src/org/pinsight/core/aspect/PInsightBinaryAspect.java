@@ -1,4 +1,4 @@
-package org.pinsight.omp.core.aspect;
+package org.pinsight.core.aspect;
 
 /*******************************************************************************
  * Copyright (c) 2015 EfficiOS Inc., Alexandre Montplaisir
@@ -27,8 +27,9 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
 import org.eclipse.tracecompass.tmf.core.event.aspect.ITmfEventAspect;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
-import org.pinsight.omp.core.analysis.PInsightAnalysisModule;
-import org.pinsight.omp.core.trace.PInsightTrace;
+import org.pinsight.core.analysis.PInsightAnalysisModule;
+import org.pinsight.core.trace.PInsightEvent;
+import org.pinsight.core.trace.PInsightTrace;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -154,12 +155,13 @@ public class PInsightBinaryAspect implements ITmfEventAspect<BinaryCallsite> {
     @Override
     public @Nullable BinaryCallsite resolve(ITmfEvent event) {
         /* This aspect only supports UST traces */
-        if (!(event.getTrace() instanceof PInsightTrace)) {
+        if (!(event instanceof PInsightEvent)) {
             return null;
         }
+        
         PInsightTrace trace = (PInsightTrace) event.getTrace();
-
-        ILttngUstEventLayout layout = trace.getEventLayout();
+        PInsightEvent castEvent = (PInsightEvent) event;
+        ILttngUstEventLayout layout = castEvent.getLayout();
 
         /* We need both the vpid and ip contexts */
         ITmfEventField vpidField = event.getContent().getField(layout.contextVpid());

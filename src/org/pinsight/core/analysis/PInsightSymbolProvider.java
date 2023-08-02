@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-package org.pinsight.omp.core.analysis;
+package org.pinsight.core.analysis;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,11 +32,11 @@ import org.eclipse.tracecompass.tmf.core.trace.ITmfTrace;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
 import org.eclipse.tracecompass.internal.lttng2.ust.core.analysis.debuginfo.TmfLibrarySymbol;
 
-import org.pinsight.omp.core.analysis.PInsightAnalysisModule;
-import org.pinsight.omp.core.aspect.PInsightBinaryAspect;
-import org.pinsight.omp.core.aspect.PInsightSourceAspect;
-import org.pinsight.omp.core.aspect.PInsightFunctionAspect;
-import org.pinsight.omp.core.trace.PInsightTrace;
+import org.pinsight.core.analysis.PInsightAnalysisModule;
+import org.pinsight.core.aspect.PInsightBinaryAspect;
+import org.pinsight.core.aspect.PInsightSourceAspect;
+import org.pinsight.core.aspect.PInsightFunctionAspect;
+import org.pinsight.core.trace.PInsightTrace;
 
 /**
  * Symbol provider for UST traces with debug information.

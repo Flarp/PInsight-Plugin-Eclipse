@@ -1,4 +1,4 @@
-package org.pinsight.omp.core;
+package org.pinsight.core;
 /*******************************************************************************
  * Copyright (c) 2013, 2015 Ericsson
  *

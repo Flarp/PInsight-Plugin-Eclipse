@@ -14,7 +14,7 @@
  *   Marc-Andre Laperle - Handle BufferOverflowException (Bug 420203)
  **********************************************************************/
 
-package org.pinsight.omp.core.trace;
+package org.pinsight.core.trace;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,7 +25,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.pinsight.omp.core.Activator;
+import org.pinsight.core.Activator;
+import org.pinsight.core.aspect.PInsightBinaryAspect;
+import org.pinsight.core.aspect.PInsightFunctionAspect;
+import org.pinsight.core.aspect.PInsightSourceAspect;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.Messages;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.layout.ILttngUstEventLayout;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -39,11 +42,6 @@ import org.eclipse.tracecompass.tmf.ctf.core.trace.CtfTraceValidationStatus;
 import org.eclipse.tracecompass.internal.lttng2.common.core.trace.ILttngTrace;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace.SymbolProviderConfig;
-
-import org.pinsight.omp.core.aspect.PInsightBinaryAspect;
-import org.pinsight.omp.core.aspect.PInsightSourceAspect;
-import org.pinsight.omp.core.aspect.PInsightFunctionAspect;
-
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoBinaryAspect;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoSourceAspect;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoFunctionAspect;
@@ -51,6 +49,7 @@ import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoF
 import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.ContextVpidAspect;
 import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.ContextVtidAspect;
 import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.UstTracefAspect;
+import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.layout.LttngUst29EventLayout;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -108,17 +107,6 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
         super(factory);
     }
 
-    /**
-     * Get the event layout to use with this trace. This normally depends on the
-     * tracer's version.
-     *
-     * @return The event layout
-     * @since 2.0
-     */
-    //@Override
-    public @NonNull ILttngUstEventLayout getEventLayout() {
-    	return PInsightEventLayout.getInstance();
-    }
 
     @Override
     public void initTrace(IResource resource, String path,
@@ -128,7 +116,7 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
         ImmutableSet.Builder<ITmfEventAspect<?>> builder = ImmutableSet.builder();
         builder.addAll(PINSIGHT_ASPECTS);
         
-        ILttngUstEventLayout layout = getLayoutFromEnv();
+        ILttngUstEventLayout layout = LttngUst29EventLayout.getInstance();
         
         if (checkFieldPresent(layout.contextVtid())) {
             builder.add(new ContextVtidAspect(layout));
@@ -150,9 +138,6 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
         return traceEvents.containsValue(field);
     }
 
-    private @NonNull ILttngUstEventLayout getLayoutFromEnv() {
-        return PInsightEventLayout.getInstance();
-    }
 
     @Override
     public Iterable<ITmfEventAspect<?>> getEventAspects() {

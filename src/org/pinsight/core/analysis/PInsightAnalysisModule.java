@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-package org.pinsight.omp.core.analysis;
+package org.pinsight.core.analysis;
 
 import static org.eclipse.tracecompass.common.core.NonNullUtils.checkNotNull;
 
@@ -42,8 +42,8 @@ import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoL
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
-import org.pinsight.omp.core.analysis.PInsightStateProvider;
-import org.pinsight.omp.core.trace.PInsightTrace;
+import org.pinsight.core.analysis.PInsightStateProvider;
+import org.pinsight.core.trace.PInsightTrace;
 
 /**
  * Analysis to provide TMF Callsite information by mapping IP (instruction
@@ -57,7 +57,7 @@ public class PInsightAnalysisModule extends TmfStateSystemAnalysisModule {
     /**
      * Analysis ID, it should match that in the plugin.xml file
      */
-    public static final String ID = "org.pinsight.omp.core.analysis"; //$NON-NLS-1$
+    public static final String ID = "org.pinsight.core.analysis"; //$NON-NLS-1$
 
     @Override
     protected ITmfStateProvider createStateProvider() {

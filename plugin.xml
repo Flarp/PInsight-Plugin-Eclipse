@@ -2,21 +2,43 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         id="org.pinsight.omp.core.analysis.debug"
+         point="org.eclipse.linuxtools.tmf.core.analysis">
+      <module
+            analysis_module="org.pinsight.core.analysis.PInsightAnalysisModule"
+            automatic="true"
+            id="omp.pinsight.core.analysis"
+            name="Debug Info">
+         <tracetype
+               applies="true"
+               class="org.pinsight.core.trace.PInsightTrace">
+         </tracetype>
+      </module>
+   </extension>
+   <extension
+         id="org.pinsight.omp.ui"
+         point="org.eclipse.linuxtools.tmf.ui.tracetypeui">
+      <type
+            tracetype="org.pinsight.trace">
+      </type>
+   </extension>
+   <extension
+         id="org.pinsight.omp.core.trace"
          point="org.eclipse.linuxtools.tmf.core.tracetype">
       <type
             category="org.eclipse.linuxtools.tmf.ctf.core.category.ctf"
-            event_type="org.pinsight.omp.core.trace.PInsightEvent"
-            id="org.pinsight"
+            event_type="org.pinsight.core.trace.PInsightEvent"
+            id="org.pinsight.trace"
             isDirectory="false"
-            name="PInsight OMP Trace"
-            trace_type="org.pinsight.omp.core.trace.PInsightTrace">
+            name="PInsight Trace"
+            trace_type="org.pinsight.core.trace.PInsightTrace">
       </type>
    </extension>
    <extension
          point="org.eclipse.tracecompass.tmf.core.symbolProvider">
       <providerFactory
-            class="org.eclipse.tracecompass.internal.lttng2.ust.core.analysis.debuginfo.UstDebugInfoSymbolProviderFactory"
-            id="org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.providerFactory"
+            class="org.pinsight.core.analysis.PInsightSymbolProviderFactory"
+            id="org.pinsight.core.analysis.symbolProvider"
             priority="50">
       </providerFactory>
       <providerFactory
@@ -24,12 +46,6 @@
             id="org.eclipse.tracecompass.lttng2.ust.ui.analysis.debuginfo.providerFactory"
             priority="51">
       </providerFactory>
-   </extension>
-   <extension
-         point="org.eclipse.linuxtools.tmf.ui.tracetypeui">
-      <type
-            tracetype="org.pinsight">
-      </type>
    </extension>
 
 </plugin>

@@ -1,4 +1,4 @@
-package org.pinsight.omp.core.aspect;
+package org.pinsight.core.aspect;
 /*******************************************************************************
  * Copyright (c) 2015 EfficiOS Inc., Alexandre Montplaisir
  *
@@ -31,9 +31,10 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.event.aspect.ITmfEventAspect;
 import org.eclipse.tracecompass.tmf.core.event.lookup.TmfCallsite;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
-
-import org.pinsight.omp.core.trace.PInsightTrace;
-import org.pinsight.omp.core.aspect.PInsightBinaryAspect;
+import org.pinsight.core.analysis.PInsightAnalysisModule;
+import org.pinsight.core.analysis.PInsightStateProvider;
+import org.pinsight.core.aspect.PInsightBinaryAspect;
+import org.pinsight.core.trace.PInsightTrace;
 
 
 /**
@@ -83,16 +84,16 @@ public class PInsightSourceAspect implements ITmfEventAspect<TmfCallsite> {
             return null;
         }
 
-        Iterator<UstDebugInfoAnalysisModule> ustDebugModules = TmfTraceUtils.getAnalysisModulesOfClass(event.getTrace(), UstDebugInfoAnalysisModule.class).iterator();
+        Iterator<PInsightAnalysisModule> ustDebugModules = TmfTraceUtils.getAnalysisModulesOfClass(event.getTrace(), PInsightAnalysisModule.class).iterator();
         if (ustDebugModules.hasNext()) {
-            UstDebugInfoAnalysisModule ustDebugModule = ustDebugModules.next();
+        	PInsightAnalysisModule ustDebugModule = ustDebugModules.next();
             ITmfStateSystem ustDebugSsq = ustDebugModule.getStateSystem();
             if (ustDebugSsq != null) {
                 String binFilePath = bc.getBinaryFilePath();
                 long offset = bc.getOffset() + ustDebugSsq.getStartTime();
                 try {
-                    int srcFileNameQuark = ustDebugSsq.getQuarkAbsolute(binFilePath, UstDebugInfoStateProvider.SOURCE_FILE_NAME);
-                    int lineNrQuark = ustDebugSsq.getQuarkAbsolute(binFilePath, UstDebugInfoStateProvider.LINE_NUMBER);
+                    int srcFileNameQuark = ustDebugSsq.getQuarkAbsolute(binFilePath, PInsightStateProvider.SOURCE_FILE_NAME);
+                    int lineNrQuark = ustDebugSsq.getQuarkAbsolute(binFilePath, PInsightStateProvider.LINE_NUMBER);
                     ITmfStateInterval srcFileInterval = ustDebugSsq.querySingleState(offset, srcFileNameQuark);
                     ITmfStateInterval lineNrInterval = ustDebugSsq.querySingleState(offset, lineNrQuark);
                     String lineNrValue = lineNrInterval.getValueString();

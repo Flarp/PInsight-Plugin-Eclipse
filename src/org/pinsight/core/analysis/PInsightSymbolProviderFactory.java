@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 EfficiOS Inc. and others
+ * Copyright (c) 2016, 2019 EfficiOS Inc. and others
  *
  * All rights reserved. This program and the accompanying materials are
  * made available under the terms of the Eclipse Public License 2.0 which
@@ -9,24 +9,25 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-package org.pinsight.omp.ui.analysis;
+package org.pinsight.core.analysis;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.tracecompass.internal.lttng2.ust.ui.analysis.debuginfo.UstDebugInfoUiSymbolProvider;
-import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoAnalysisModule;
-import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace;
 import org.eclipse.tracecompass.tmf.core.symbols.ISymbolProvider;
 import org.eclipse.tracecompass.tmf.core.symbols.ISymbolProviderFactory;
 import org.eclipse.tracecompass.tmf.core.trace.ITmfTrace;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
 
+import org.pinsight.core.analysis.PInsightAnalysisModule;
+import org.pinsight.core.trace.PInsightTrace;
+import org.pinsight.core.analysis.PInsightSymbolProvider;
+
 /**
- * Factory to create {@link UstDebugInfoUiSymbolProvider}. Provided to TMF via
+ * Factory to create {@link UstDebugInfoSymbolProvider}. Provided to TMF via
  * the extension point. Only works with LTTng-UST traces.
  *
  * @author Alexandre Montplaisir
  */
-public class PInsightUiSymbolProviderFactory implements ISymbolProviderFactory {
+public class PInsightSymbolProviderFactory implements ISymbolProviderFactory {
 
     @Override
     public @Nullable ISymbolProvider createProvider(ITmfTrace trace) {
@@ -34,11 +35,11 @@ public class PInsightUiSymbolProviderFactory implements ISymbolProviderFactory {
          * This applies only to UST traces that fulfill the DebugInfo analysis
          * requirements.
          */
-        UstDebugInfoAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace,
-                UstDebugInfoAnalysisModule.class, UstDebugInfoAnalysisModule.ID);
+    	PInsightAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace,
+        		PInsightAnalysisModule.class, PInsightAnalysisModule.ID);
 
-        if (module != null && trace instanceof LttngUstTrace) {
-            return new UstDebugInfoUiSymbolProvider((LttngUstTrace) trace);
+        if (module != null && trace instanceof PInsightTrace) {
+            return new PInsightSymbolProvider((PInsightTrace) trace);
         }
         return null;
     }

@@ -9,7 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-package org.pinsight.omp.core.aspect;
+package org.pinsight.core.aspect;
 
 import static org.eclipse.tracecompass.common.core.NonNullUtils.nullToEmptyString;
 
@@ -23,10 +23,9 @@ import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.Messages;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.FunctionLocation;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.event.aspect.ITmfEventAspect;
-
-import org.pinsight.omp.core.aspect.PInsightBinaryAspect;
-import org.pinsight.omp.core.trace.PInsightEvent;
-import org.pinsight.omp.core.trace.PInsightTrace;
+import org.pinsight.core.analysis.PInsightSymbolProvider;
+import org.pinsight.core.aspect.PInsightBinaryAspect;
+import org.pinsight.core.trace.PInsightTrace;
 
 /**
  * Aspect for the function location obtained with the UST debug info.
@@ -65,7 +64,7 @@ public class PInsightFunctionAspect implements ITmfEventAspect<FunctionLocation>
             return null;
         }
 
-        String functionName = UstDebugInfoSymbolProvider.getFunctionNameFromSS(bc, event.getTrace());
+        String functionName = PInsightSymbolProvider.getFunctionNameFromSS(bc, event.getTrace());
         /*
          * Return function information only if it is non null, otherwise try to
          * resolve the symbol in another way (see code below).
