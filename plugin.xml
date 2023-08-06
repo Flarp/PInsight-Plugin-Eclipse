@@ -2,48 +2,49 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         id="org.pinsight.omp.core.analysis.debug"
-         point="org.eclipse.linuxtools.tmf.core.analysis">
-      <module
-            analysis_module="org.pinsight.core.analysis.PInsightAnalysisModule"
-            automatic="true"
-            id="omp.pinsight.core.analysis"
-            name="Debug Info">
-         <tracetype
-               applies="true"
-               class="org.pinsight.core.trace.PInsightTrace">
-         </tracetype>
-      </module>
-   </extension>
-   <extension
-         id="org.pinsight.omp.ui"
-         point="org.eclipse.linuxtools.tmf.ui.tracetypeui">
-      <type
-            tracetype="org.pinsight.trace">
-      </type>
-   </extension>
-   <extension
-         id="org.pinsight.omp.core.trace"
+         id="org.pinsight.core.trace"
          point="org.eclipse.linuxtools.tmf.core.tracetype">
       <type
             category="org.eclipse.linuxtools.tmf.ctf.core.category.ctf"
             event_type="org.pinsight.core.trace.PInsightEvent"
-            id="org.pinsight.trace"
+            id="org.pinsight.core.trace"
             isDirectory="false"
             name="PInsight Trace"
             trace_type="org.pinsight.core.trace.PInsightTrace">
       </type>
    </extension>
    <extension
+         id="org.pinsight.core.analysis"
+         point="org.eclipse.linuxtools.tmf.core.analysis">
+      <module
+            analysis_module="org.pinsight.core.analysis.PInsightAnalysisModule"
+            automatic="true"
+            id="org.pinsight.core.analysis"
+            name="Debug Info">
+         <tracetype
+               applies="true"
+               class="org.pinsight.core.trace.PInsightTrace"
+               id="org.pinsight.core.trace">
+         </tracetype>
+      </module>
+   </extension>
+   <extension
+         id="org.pinsight.ui"
+         point="org.eclipse.linuxtools.tmf.ui.tracetypeui">
+      <type
+            tracetype="org.pinsight.core.trace">
+      </type>
+   </extension>
+   <extension
          point="org.eclipse.tracecompass.tmf.core.symbolProvider">
       <providerFactory
             class="org.pinsight.core.analysis.PInsightSymbolProviderFactory"
-            id="org.pinsight.core.analysis.symbolProvider"
+            id="org.pinsight.core.analysis.providerFactory"
             priority="50">
       </providerFactory>
       <providerFactory
-            class="org.eclipse.tracecompass.internal.lttng2.ust.ui.analysis.debuginfo.UstDebugInfoUiSymbolProviderFactory"
-            id="org.eclipse.tracecompass.lttng2.ust.ui.analysis.debuginfo.providerFactory"
+            class="org.pinsight.ui.analysis.PInsightUiSymbolProviderFactory"
+            id="org.pinsight.ui.analysis.providerFactory"
             priority="51">
       </providerFactory>
    </extension>

@@ -62,24 +62,14 @@ public class PInsightEventFactory extends CtfTmfEventFactory {
         if (eventDecl.getName().equals(CTFStrings.LOST_EVENT_NAME)) {
             return createLostEvent(trace, eventDef, eventDecl, ts, timestamp, sourceCPU, reference);
         }
+
+    	return new PInsightEvent(trace,
+                ITmfContext.UNKNOWN_RANK,
+                timestamp,
+                reference, // filename
+                sourceCPU,
+                eventDecl,
+                eventDef);
         
-        
-        if (eventDecl.getName().startsWith("ompt")) {
-        	return new PInsightEvent(trace,
-	                ITmfContext.UNKNOWN_RANK,
-	                timestamp,
-	                reference, // filename
-	                sourceCPU,
-	                eventDecl,
-	                eventDef);
-        } else {
-        	return new PInsightEvent(trace,
-	                ITmfContext.UNKNOWN_RANK,
-	                timestamp,
-	                reference, // filename
-	                sourceCPU,
-	                eventDecl,
-	                eventDef);
-        }
     }
 }
