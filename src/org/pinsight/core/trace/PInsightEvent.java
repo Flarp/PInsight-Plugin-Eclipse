@@ -14,6 +14,15 @@ import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstEvent;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.layout.ILttngUstEventLayout;
 import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.layout.LttngUst29EventLayout;
 
+/**
+ * 
+ * @author Ethan Dorta
+ *
+ * This class wraps around the LttngUstEvent (the event type for LTTng-UST traces)
+ * and assigns different event layouts depending on what type of event we are
+ * dealing with. Event layouts are used to determine where to find pieces of information
+ * that different aspects require.
+ */
 @NonNullByDefault
 public class PInsightEvent extends LttngUstEvent {
 	

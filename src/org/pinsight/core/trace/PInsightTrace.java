@@ -61,9 +61,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
 /**
- * Class to contain LTTng-UST traces
+ * Class to contain LTTng-UST traces (extended to be able to work with
+ * traces specifically from pinsight)
  *
- * @author Matthew Khouzam
+ * @author Matthew Khouzam, Ethan Dorta
  */
 public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
 
@@ -80,6 +81,13 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
     private static final @NonNull Collection<ITmfEventAspect<?>> PINSIGHT_ASPECTS;
     
 
+    /* Gnarly chain of aspect additions - not as modular as I would have liked
+     * Documentation can be found in the PInsightAspectContainer library
+     * 
+     * "Aspects" for TraceCompass correspond to columns in a way, in that they get
+     * information from an event and do something to have it displayed in some form.
+     * These aspects need to be registered to the trace type in order to be used.
+     * */
     static {
         ImmutableSet.Builder<ITmfEventAspect<?>> builder = ImmutableSet.builder();
         builder.addAll(CtfTmfTrace.CTF_ASPECTS);
