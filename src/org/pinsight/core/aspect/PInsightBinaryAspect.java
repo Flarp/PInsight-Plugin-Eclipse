@@ -20,7 +20,8 @@ import java.util.Optional;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.BinaryCallsite;
-import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.Messages;
+//import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.Messages;
+import org.pinsight.core.aspect.Messages;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoLoadedBinaryFile;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.layout.ILttngUstEventLayout;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;

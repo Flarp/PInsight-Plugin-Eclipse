@@ -29,10 +29,12 @@ import org.pinsight.core.Activator;
 import org.pinsight.core.aspect.PInsightBinaryAspect;
 import org.pinsight.core.aspect.PInsightFunctionAspect;
 import org.pinsight.core.aspect.PInsightSourceAspect;
+import org.pinsight.omp.trace.PInsightOmpEventLayout;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.Messages;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.layout.ILttngUstEventLayout;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.event.aspect.ITmfEventAspect;
+import org.eclipse.tracecompass.tmf.core.event.lookup.TmfCallsite;
 import org.eclipse.tracecompass.tmf.core.exceptions.TmfTraceException;
 import org.eclipse.tracecompass.tmf.core.trace.TmfEventTypeCollectionHelper;
 import org.eclipse.tracecompass.tmf.core.trace.TraceValidationStatus;
@@ -42,6 +44,8 @@ import org.eclipse.tracecompass.tmf.ctf.core.trace.CtfTraceValidationStatus;
 import org.eclipse.tracecompass.internal.lttng2.common.core.trace.ILttngTrace;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace;
 import org.eclipse.tracecompass.lttng2.ust.core.trace.LttngUstTrace.SymbolProviderConfig;
+import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.BinaryCallsite;
+import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.FunctionLocation;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoBinaryAspect;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoSourceAspect;
 import org.eclipse.tracecompass.lttng2.ust.core.analysis.debuginfo.UstDebugInfoFunctionAspect;
@@ -50,6 +54,8 @@ import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.ContextVpidAspect
 import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.ContextVtidAspect;
 import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.UstTracefAspect;
 import org.eclipse.tracecompass.internal.lttng2.ust.core.trace.layout.LttngUst29EventLayout;
+
+import org.pinsight.core.aspect.PInsightAspectContainer;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -78,9 +84,38 @@ public class PInsightTrace extends CtfTmfTrace implements ILttngTrace {
         ImmutableSet.Builder<ITmfEventAspect<?>> builder = ImmutableSet.builder();
         builder.addAll(CtfTmfTrace.CTF_ASPECTS);
         
-        builder.add(PInsightBinaryAspect.INSTANCE);
-        builder.add(PInsightSourceAspect.INSTANCE);
-        builder.add(PInsightFunctionAspect.INSTANCE);
+        builder.add(
+        	new PInsightAspectContainer<PInsightBinaryAspect, BinaryCallsite, PInsightOmpEventLayout>("PInsight OMP Binary Location", "", PInsightBinaryAspect.INSTANCE)
+        );     
+        builder.add(
+            new PInsightAspectContainer<PInsightSourceAspect, TmfCallsite, PInsightOmpEventLayout>("PInsight OMP Source Location", "", PInsightSourceAspect.INSTANCE)
+        );  
+        builder.add(
+            new PInsightAspectContainer<PInsightFunctionAspect, FunctionLocation, PInsightOmpEventLayout>("PInsight OMP Function Location", "", PInsightFunctionAspect.INSTANCE)
+        );  
+        
+        builder.add(
+        	new PInsightAspectContainer<PInsightBinaryAspect, BinaryCallsite, PInsightOmpEventLayout>("PInsight MPI Binary Location", "", PInsightBinaryAspect.INSTANCE)
+        );     
+        builder.add(
+            new PInsightAspectContainer<PInsightSourceAspect, TmfCallsite, PInsightOmpEventLayout>("PInsight MPI Source Location", "", PInsightSourceAspect.INSTANCE)
+        );  
+        builder.add(
+            new PInsightAspectContainer<PInsightFunctionAspect, FunctionLocation, PInsightOmpEventLayout>("PInsight MPI Function Location", "", PInsightFunctionAspect.INSTANCE)
+        );  
+            
+        builder.add(
+        	new PInsightAspectContainer<PInsightBinaryAspect, BinaryCallsite, PInsightOmpEventLayout>("PInsight CUDA Binary Location", "", PInsightBinaryAspect.INSTANCE)
+        );     
+        builder.add(
+            new PInsightAspectContainer<PInsightSourceAspect, TmfCallsite, PInsightOmpEventLayout>("PInsight CUDA Source Location", "", PInsightSourceAspect.INSTANCE)
+        );  
+        builder.add(
+            new PInsightAspectContainer<PInsightFunctionAspect, FunctionLocation, PInsightOmpEventLayout>("PInsight CUDA Function Location", "", PInsightFunctionAspect.INSTANCE)
+        );  
+        //builder.add(PInsightBinaryAspect.INSTANCE);
+        //builder.add(PInsightSourceAspect.INSTANCE);
+        //builder.add(PInsightFunctionAspect.INSTANCE);
         PINSIGHT_ASPECTS = builder.build();
     }
 
